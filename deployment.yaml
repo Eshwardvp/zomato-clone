@@ -1,0 +1,37 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: zomato-clone
+  namespace: default
+  labels:
+    app: zomato
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zomato
+  template:
+    metadata:
+      labels:
+        app: zomato
+    spec:
+      containers:
+      - name: zomato-clone
+        image: "eshwardvp/zomato:latest"
+        ports:
+          - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zomato-clone
+  namespace: default
+spec:
+  selector:
+    app: zomato
+  type: LoadBalancer
+  ports:
+  - name: http
+    targetPort: 3000
+    port: 80

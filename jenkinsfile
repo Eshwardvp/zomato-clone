@@ -59,10 +59,23 @@ pipeline{
                 sh "trivy image eshwardvp/zomato:latest > trivy.txt" 
             }
         }
+
         stage('Deploy to container'){
             steps{
                 sh 'docker run -d --name zomato -p 3000:3000 eshwardvp/zomato:latest'
             }
         }
+
+      stage('Deploying Node App to Kubernetes') {
+        steps {
+          script {
+            sh ('aws eks update-kubeconfig --name sample --region ap-south-1')
+            sh "kubectl get ns"
+            sh "kubectl apply -f deployment.yaml"
+        }
+      }
+    }
+
+
     }
 }
